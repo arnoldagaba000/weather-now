@@ -2,11 +2,11 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { SearchIcon } from "lucide-react";
+import DayPicker from "@/components/day-picker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getWeatherInfo } from "@/data/api";
 import { getImageDetails } from "@/lib/weather-codes";
-import DayPicker from "@/components/day-picker";
 
 export const Route = createFileRoute("/")({
     component: Home,
@@ -65,6 +65,7 @@ function Home() {
                         <SearchIcon className="absolute top-1/2 left-3 size-5 -translate-y-1/2 transform text-muted-foreground" />
 
                         <input
+                            aria-label="Search for a city"
                             className="w-full rounded-md bg-gray-700 py-2 pr-2 pl-11 text-lg text-white placeholder:truncate placeholder:text-lg"
                             placeholder="Search for a city e.g. New York"
                             type="search"
@@ -251,13 +252,16 @@ function Home() {
                                     </h3>
 
                                     {/* Day selector */}
-                                  <DayPicker />
+                                    <DayPicker />
                                 </div>
 
                                 <div className="space-y-4">
                                     {hourlyData.map((hour, index) => (
                                         // biome-ignore lint/suspicious/noArrayIndexKey: Ignore
-                                        <Card key={index} className="rounded-sm">
+                                        <Card
+                                            className="rounded-sm"
+                                            key={index}
+                                        >
                                             <CardContent className="flex items-center justify-between">
                                                 <div className="flex items-center gap-2">
                                                     <img
