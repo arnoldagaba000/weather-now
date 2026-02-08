@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: Ignore */
+
 import { createServerFn } from "@tanstack/react-start";
 import { fetchWeatherApi } from "openmeteo";
 
@@ -6,7 +7,7 @@ const params = {
     latitude: 0.3152,
     longitude: 32.5816,
     daily: ["temperature_2m_max", "temperature_2m_min", "weather_code"],
-    hourly: "temperature_2m",
+    hourly: ["temperature_2m", "weather_code"],
     current: [
         "temperature_2m",
         "apparent_temperature",
@@ -84,6 +85,7 @@ export const getWeatherInfo = createServerFn({ method: "GET" }).handler(
                     hourly.interval()
                 ).map((t) => new Date((t + utcOffsetSeconds) * 1000)),
                 temperature_2m: Array.from(hourly.variables(0)!.valuesArray()!),
+                weather_code: Array.from(hourly.variables(1)!.valuesArray()!),
             },
             daily: {
                 time: range(

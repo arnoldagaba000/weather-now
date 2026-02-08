@@ -38,8 +38,8 @@ function Home() {
 
     // Process hourly forcast data
     const hourlyData = hourlyForecast.time.slice(0, 8).map((date, index) => {
-        const href = getImageDetails(dailyForecast.weather_code[index]).href;
-        const alt = getImageDetails(dailyForecast.weather_code[index]).alt;
+        const href = getImageDetails(hourlyForecast.weather_code[index]).href;
+        const alt = getImageDetails(hourlyForecast.weather_code[index]).alt;
 
         return {
             time: new Date(date).toLocaleTimeString("en-US", {
