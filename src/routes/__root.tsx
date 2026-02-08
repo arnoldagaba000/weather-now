@@ -5,30 +5,37 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 
 import appCss from "../styles.css?url";
+import Header from "@/components/header";
 
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "Weather Now",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
+    head: () => ({
+        meta: [
+            {
+                charSet: "utf-8",
+            },
+            {
+                name: "viewport",
+                content: "width=device-width, initial-scale=1",
+            },
+            {
+                title: "Weather Now",
+            },
+        ],
+        links: [
+            {
+                rel: "stylesheet",
+                href: appCss,
+            },
+            {
+                rel: "icon",
+                type: "image/png",
+                sizes: "32x32",
+                href: "/images/favicon-32x32.png",
+            },
+        ],
+    }),
 
-  shellComponent: RootDocument,
+    shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -40,6 +47,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
       <body>
         <ThemeProvider attribute="class" enableColorScheme enableSystem>
+          <Header />
           {children}
         </ThemeProvider>
 
