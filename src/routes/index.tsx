@@ -2,6 +2,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { SearchIcon } from "lucide-react";
+import { useState } from "react";
 import DayPicker from "@/components/day-picker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -16,11 +17,18 @@ export const Route = createFileRoute("/")({
 function Home() {
     const weatherData = Route.useLoaderData();
 
+    // Get the current day of the week as default
+    const currentDay = new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+    });
+
+    const [selectedDay, setSelectedDay] = useState<string>(currentDay);
+
     const dailyForecast = weatherData.daily;
     const hourlyForecast = weatherData.hourly;
     const currentForecast = weatherData.current;
 
-    // Process daily forcast data
+    // Process daily forecast data
     const dailyData = dailyForecast.time.slice(0, 7).map((date, index) => {
         const href = getImageDetails(dailyForecast.weather_code[index]).href;
         const alt = getImageDetails(dailyForecast.weather_code[index]).alt;
@@ -36,21 +44,27 @@ function Home() {
         };
     });
 
-    // Process hourly forcast data
-    const hourlyData = hourlyForecast.time.slice(0, 8).map((date, index) => {
-        const href = getImageDetails(hourlyForecast.weather_code[index]).href;
-        const alt = getImageDetails(hourlyForecast.weather_code[index]).alt;
+    // Filter hourly forecast by selected day
+    const hourlyData = hourlyForecast.time
+        .map((date, index) => {
+            const dateObj = new Date(date);
+            const dayOfWeek = dateObj.toLocaleDateString("en-US", {
+                weekday: "long",
+            });
 
-        return {
-            time: new Date(date).toLocaleTimeString("en-US", {
-                hour: "numeric",
-                hour12: true,
-            }),
-            href,
-            alt,
-            temperature: Math.round(hourlyForecast.temperature_2m[index]),
-        };
-    });
+            return {
+                time: dateObj.toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    hour12: true,
+                }),
+                href: getImageDetails(hourlyForecast.weather_code[0]).href,
+                alt: getImageDetails(hourlyForecast.weather_code[0]).alt,
+                temperature: Math.round(hourlyForecast.temperature_2m[index]),
+                dayOfWeek,
+            };
+        })
+        .filter((hour) => hour.dayOfWeek === selectedDay)
+        .slice(0, 8);
 
     return (
         <div className="mx-auto min-h-screen">
@@ -65,7 +79,6 @@ function Home() {
                         <SearchIcon className="absolute top-1/2 left-3 size-5 -translate-y-1/2 transform text-muted-foreground" />
 
                         <input
-                            aria-label="Search for a city"
                             className="w-full rounded-md bg-gray-700 py-2 pr-2 pl-11 text-lg text-white placeholder:truncate placeholder:text-lg"
                             placeholder="Search for a city e.g. New York"
                             type="search"
@@ -252,14 +265,17 @@ function Home() {
                                     </h3>
 
                                     {/* Day selector */}
-                                    <DayPicker />
+                                    <DayPicker
+                                        onValueChange={setSelectedDay}
+                                        value={selectedDay}
+                                    />
                                 </div>
 
                                 <div className="space-y-4">
                                     {hourlyData.map((hour, index) => (
-                                        // biome-ignore lint/suspicious/noArrayIndexKey: Ignore
                                         <Card
                                             className="rounded-sm"
+                                            // biome-ignore lint/suspicious/noArrayIndexKey: ignore
                                             key={index}
                                         >
                                             <CardContent className="flex items-center justify-between">
