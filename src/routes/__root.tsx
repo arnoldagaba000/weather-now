@@ -3,9 +3,10 @@ import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
+import Header from "@/components/header";
+import { UnitsProvider } from "@/context/units-context";
 
 import appCss from "../styles.css?url";
-import Header from "@/components/header";
 
 export const Route = createRootRoute({
     head: () => ({
@@ -39,33 +40,35 @@ export const Route = createRootRoute({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <HeadContent />
-      </head>
+    return (
+        <html lang="en" suppressHydrationWarning>
+            <head>
+                <HeadContent />
+            </head>
 
-      <body>
-        <ThemeProvider attribute="class" enableColorScheme enableSystem>
-          <Header />
-          {children}
-        </ThemeProvider>
+            <body>
+                <ThemeProvider attribute="class" enableColorScheme enableSystem>
+                    <UnitsProvider>
+                        <Header />
+                        {children}
+                    </UnitsProvider>
+                </ThemeProvider>
 
-        <Toaster />
+                <Toaster />
 
-        <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "Tanstack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
-        <Scripts />
-      </body>
-    </html>
-  );
+                <TanStackDevtools
+                    config={{
+                        position: "bottom-right",
+                    }}
+                    plugins={[
+                        {
+                            name: "Tanstack Router",
+                            render: <TanStackRouterDevtoolsPanel />,
+                        },
+                    ]}
+                />
+                <Scripts />
+            </body>
+        </html>
+    );
 }

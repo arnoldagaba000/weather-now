@@ -17,9 +17,14 @@ const data = [
     { value: "Sunday", label: "Sunday" },
 ];
 
-const DayPicker = () => {
+interface DayPickerProps {
+    value: string;
+    onValueChange: (value: string) => void;
+}
+
+const DayPicker = ({ value, onValueChange }: DayPickerProps) => {
     return (
-        <Select defaultValue="Monday">
+        <Select onValueChange={onValueChange} value={value}>
             <SelectTrigger className="rounded-sm">
                 <SelectValue />
             </SelectTrigger>
