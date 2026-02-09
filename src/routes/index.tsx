@@ -6,6 +6,7 @@ import { useState } from "react";
 import DayPicker from "@/components/day-picker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useUnits } from "@/context/units-context";
 import { getWeatherInfo } from "@/data/api";
 import { getImageDetails } from "@/lib/weather-codes";
 
@@ -16,6 +17,15 @@ export const Route = createFileRoute("/")({
 
 function Home() {
     const weatherData = Route.useLoaderData();
+
+    const {
+        convertTemperature,
+        convertWindSpeed,
+        convertPrecipitation,
+        getTemperatureSymbol,
+        getWindSpeedSymbol,
+        getPrecipitationSymbol,
+    } = useUnits();
 
     // Get the current day of the week as default
     const currentDay = new Date().toLocaleDateString("en-US", {
@@ -136,10 +146,12 @@ function Home() {
                                     />
 
                                     <span className="font-light text-6xl text-white">
-                                        {currentForecast.temperature_2m.toFixed(
-                                            0
+                                        {Math.round(
+                                            convertTemperature(
+                                                currentForecast.temperature_2m
+                                            )
                                         )}
-                                        °
+                                        {getTemperatureSymbol()}
                                     </span>
                                 </div>
                             </CardContent>
@@ -156,10 +168,12 @@ function Home() {
 
                                 <CardContent>
                                     <p className="font-semibold text-3xl">
-                                        {currentForecast.apparent_temperature.toFixed(
-                                            0
+                                        {Math.round(
+                                            convertTemperature(
+                                                currentForecast.apparent_temperature
+                                            )
                                         )}
-                                        ° C
+                                        {getTemperatureSymbol()}
                                     </p>
                                 </CardContent>
                             </Card>
@@ -190,10 +204,12 @@ function Home() {
 
                                 <CardContent>
                                     <p className="font-semibold text-3xl">
-                                        {currentForecast.wind_speed_10m.toFixed(
-                                            0
+                                        {Math.round(
+                                            convertWindSpeed(
+                                                currentForecast.wind_speed_10m
+                                            )
                                         )}{" "}
-                                        km/h
+                                        {getWindSpeedSymbol()}
                                     </p>
                                 </CardContent>
                             </Card>
@@ -207,10 +223,10 @@ function Home() {
 
                                 <CardContent>
                                     <p className="font-semibold text-3xl">
-                                        {currentForecast.precipitation.toFixed(
-                                            0
-                                        )}{" "}
-                                        mm
+                                        {convertPrecipitation(
+                                            currentForecast.precipitation
+                                        ).toFixed(1)}{" "}
+                                        {getPrecipitationSymbol()}
                                     </p>
                                 </CardContent>
                             </Card>
@@ -232,20 +248,27 @@ function Home() {
                                             <p className="mb-3 text-gray-400 text-sm">
                                                 {day.day}
                                             </p>
-
                                             <img
                                                 alt={day.alt}
                                                 className="size-10"
                                                 src={day.href}
                                             />
-
                                             <div className="mt-3 flex items-center gap-3 text-sm">
                                                 <p className="font-semibold text-white">
-                                                    {day.high}°
+                                                    {Math.round(
+                                                        convertTemperature(
+                                                            day.high
+                                                        )
+                                                    )}
+                                                    °
                                                 </p>
-
                                                 <p className="text-gray-400">
-                                                    {day.low}°
+                                                    {Math.round(
+                                                        convertTemperature(
+                                                            day.low
+                                                        )
+                                                    )}
+                                                    °
                                                 </p>
                                             </div>
                                         </CardContent>
@@ -275,7 +298,7 @@ function Home() {
                                     {hourlyData.map((hour, index) => (
                                         <Card
                                             className="rounded-sm"
-                                            // biome-ignore lint/suspicious/noArrayIndexKey: ignore
+                                            // biome-ignore lint/suspicious/noArrayIndexKey: Ignore
                                             key={index}
                                         >
                                             <CardContent className="flex items-center justify-between">
@@ -287,9 +310,13 @@ function Home() {
                                                     />
                                                     <span>{hour.time}</span>
                                                 </div>
-
                                                 <span className="text-right text-white">
-                                                    {hour.temperature}°
+                                                    {Math.round(
+                                                        convertTemperature(
+                                                            hour.temperature
+                                                        )
+                                                    )}
+                                                    °
                                                 </span>
                                             </CardContent>
                                         </Card>
