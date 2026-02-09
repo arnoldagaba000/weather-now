@@ -67,8 +67,8 @@ function Home() {
                     hour: "numeric",
                     hour12: true,
                 }),
-                href: getImageDetails(hourlyForecast.weather_code[0]).href,
-                alt: getImageDetails(hourlyForecast.weather_code[0]).alt,
+                href: getImageDetails(hourlyForecast.weather_code[index]).href,
+                alt: getImageDetails(hourlyForecast.weather_code[index]).alt,
                 temperature: Math.round(hourlyForecast.temperature_2m[index]),
                 dayOfWeek,
             };
